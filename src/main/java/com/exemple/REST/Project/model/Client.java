@@ -2,12 +2,24 @@ package com.exemple.REST.Project.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class Client {
 
     private final UUID id;
-    private final String fname,lname,address;
+
+    @NotBlank(message = "cos wpisz")
+    private final String fname;
+
+    @NotBlank
+    private final String lname;
+
+    @NotBlank
+    private final String address;
 
     public Client(@JsonProperty("id") UUID id,
                   @JsonProperty("fname") String fname,

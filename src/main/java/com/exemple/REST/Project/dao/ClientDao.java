@@ -3,6 +3,7 @@ package com.exemple.REST.Project.dao;
 import com.exemple.REST.Project.model.Client;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ClientDao {
@@ -15,4 +16,10 @@ public interface ClientDao {
     }
 
     List<Client> selectAllClient();
+
+    Optional<Client> selectClientById(UUID id);
+
+    int deleteClientById(UUID id);
+
+    int updateClientById(UUID id,Client client);
 }
