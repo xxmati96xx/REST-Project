@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-@Repository("testDao")
+@Repository("testdao")
 public class TestClientDataAccessService implements ClientDao{
 
     private static List<Client> DB = new ArrayList<>();
