@@ -12,7 +12,7 @@ public class Client {
 
     private final UUID id;
 
-    @NotBlank(message = "cos wpisz")
+    @NotBlank
     private final String fname;
 
     @NotBlank
