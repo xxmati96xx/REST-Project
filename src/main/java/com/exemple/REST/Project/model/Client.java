@@ -1,6 +1,10 @@
 package com.exemple.REST.Project.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.hateoas.RepresentationModel;
+
+
+import javax.persistence.Entity;
 
 
 
@@ -8,8 +12,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-public class Client {
-
+@Entity
+public class Client extends RepresentationModel<Client> {
     private final UUID id;
 
     @NotBlank
