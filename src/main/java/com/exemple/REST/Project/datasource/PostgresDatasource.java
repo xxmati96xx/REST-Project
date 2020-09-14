@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class PostgresDatasource {
 
     @Bean
-    @ConfigurationProperties("app.datasource")
+    @ConfigurationProperties("spring.datasource")
     public HikariDataSource hikariDataSource(){
         return DataSourceBuilder
                 .create()

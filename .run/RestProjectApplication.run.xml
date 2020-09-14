@@ -4,7 +4,7 @@
     <module name="REST-Project" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.exemple.REST.Project.*" />
+        <option name="PATTERN" value="com.exemple.REST.Project.assemblers.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

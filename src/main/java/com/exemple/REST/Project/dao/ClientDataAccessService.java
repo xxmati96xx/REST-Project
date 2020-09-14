@@ -22,14 +22,14 @@ public class ClientDataAccessService implements ClientDao {
 
     @Override
     public int insertClient(UUID id, Client client) {
-        final String sql = "INSERT INTO client (id,fname,lname,address) VALUES (?,?,?,?)";
+        final String sql = "INSERT INTO clients (id,fname,lname,address) VALUES (?,?,?,?)";
         return jdbcTemplate.update(sql,id,client.getFname(),client.getLname(),client.getAddress());
 
     }
 
     @Override
     public List<Client> selectAllClient() {
-        final String sql = "SELECT id,fname,lname,address from client";
+        final String sql = "SELECT id,fname,lname,address from clients";
         return jdbcTemplate.query(sql,(resultSet,i) -> {
             UUID id = UUID.fromString(resultSet.getString("id"));
             String fname = resultSet.getString("fname");
@@ -41,7 +41,7 @@ public class ClientDataAccessService implements ClientDao {
 
     @Override
     public Optional<Client> selectClientById(UUID id) {
-        final String sql = "SELECT id,fname,lname,address from client WHERE id= ?";
+        final String sql = "SELECT id,fname,lname,address from clients WHERE id= ?";
         Client client = jdbcTemplate.queryForObject(sql,new Object[]{id},(resultSet,i) -> {
             UUID clientId = UUID.fromString(resultSet.getString("id"));
             String fname = resultSet.getString("fname");
@@ -54,13 +54,13 @@ public class ClientDataAccessService implements ClientDao {
 
     @Override
     public int deleteClientById(UUID id) {
-        final String sql = "DELETE FROM client WHERE id= ?";
+        final String sql = "DELETE FROM clients WHERE id= ?";
         return jdbcTemplate.update(sql,id);
     }
 
     @Override
     public int updateClientById(UUID id, Client client) { //naprawić update
-        final String sql = "INSERT INTO client (id,fname,lname,address) VALUES (?,?,?,?)";
+        final String sql = "INSERT INTO clients (id,fname,lname,address) VALUES (?,?,?,?)";
         return jdbcTemplate.update(sql,id,client.getFname(),client.getLname(),client.getAddress());
     }
 }

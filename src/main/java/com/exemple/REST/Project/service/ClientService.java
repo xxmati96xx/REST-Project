@@ -1,9 +1,14 @@
 package com.exemple.REST.Project.service;
 
+import com.exemple.REST.Project.Entity.ClientEntity;
 import com.exemple.REST.Project.dao.ClientDao;
+import com.exemple.REST.Project.dao.ClientRepository;
 import com.exemple.REST.Project.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,24 +21,28 @@ public class ClientService {
     private final ClientDao clientDao;
 
     @Autowired
+    private ClientRepository clientRepository;
+
+    @Autowired
     public ClientService(@Qualifier("postgres") ClientDao clientDao) {
         this.clientDao = clientDao;
     }
 
-    public int addClient(Client client){
-        return clientDao.insertClient(client);
+    public ClientEntity addClient(ClientEntity client){
+        return clientRepository.save(client);
     }
 
-    public List<Client> getAllClient(){
-        return clientDao.selectAllClient();
+    public Page<ClientEntity> getAllClient(Pageable pageable){
+        return clientRepository.findAll(pageable);
     }
 
-    public Optional<Client> getClientById(UUID id){
-        return clientDao.selectClientById(id);
+    public Optional<ClientEntity> getClientById(UUID id){
+        return clientRepository.findById(id);
     }
 
-    public int deleteClientById(UUID id){
-        return clientDao.deleteClientById(id);
+    public String deleteClientById(UUID id){
+        clientRepository.deleteById(id);
+        return "Remove client: "+ id;
     }
 
     public int updateClientById(UUID id,Client newClient){

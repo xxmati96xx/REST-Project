@@ -1,6 +1,13 @@
-app:
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
   datasource:
+    platform: postgres
     jdbc-url: jdbc:postgresql://localhost:5432/rest_db
     username: postgres
     password: password
     pool-size: 30
+    driverClassName: org.postgresql.Driver
