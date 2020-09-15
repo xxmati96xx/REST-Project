@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,20 +46,51 @@ public class ClientService {
         return "Remove client: "+ id;
     }
 
-    public int updateClientById(UUID id,Client newClient){
+    public ClientEntity updateClientById(UUID id,Client newClient){
         ClientEntity client = clientRepository.findById(id).orElse(new ClientEntity());
         if(client.getId() == null) {
             client.setId(id);
         }
-            if(newClient.getFname()!= null && newClient.getLname() != null && newClient.getAddress()!=null){
+            if(     !StringUtils.isEmpty(newClient.getFname()) &&
+                    !StringUtils.isEmpty(newClient.getLname()) &&
+                    !StringUtils.isEmpty(newClient.getAddress())){
                 client.setFname(newClient.getFname());
                 client.setLname(newClient.getLname());
                 client.setAddress(newClient.getAddress());
                 clientRepository.save(client);
-                return 1;
+                return client;
             }
-        return 0;
+        return null;
         }
-
+    public int updatePartialClientById(UUID id,Client newClient){
+        ClientEntity client = clientRepository.findById(id).orElse(null);
+        if(client.getId() != null) {
+            /*
+            if(newClient.getFname()!= null) {
+                client.setFname(newClient.getFname());
+            }
+            if(newClient.getLname() != null) {
+                client.setLname(newClient.getLname());
+            }
+            if(newClient.getAddress()!=null) {
+                client.setAddress(newClient.getAddress());
+            }
+            */
+            Optional.ofNullable(newClient.getFname())
+                    .filter(fname -> !StringUtils.isEmpty(fname))
+                    .map(StringUtils::capitalize)
+                    .ifPresent(fname -> client.setFname(newClient.getFname()));
+            Optional.ofNullable(newClient.getLname())
+                    .filter(lname -> !StringUtils.isEmpty(lname))
+                    .map(StringUtils::capitalize)
+                    .ifPresent(lirstName -> client.setLname(newClient.getLname()));
+            Optional.ofNullable(newClient.getAddress())
+                    .filter(address -> !StringUtils.isEmpty(address))
+                    .ifPresent(address -> client.setAddress(newClient.getAddress()));
+            clientRepository.save(client);
+            return 1;
+        }
+        return 0;
     }
+}
 

@@ -27,6 +27,7 @@ public class ClientModelAssembler extends RepresentationModelAssemblerSupport<Cl
         clientModel.setLname(entity.getLname());
         clientModel.setAddress(entity.getAddress());
 
+
         return clientModel;
     }
 }
