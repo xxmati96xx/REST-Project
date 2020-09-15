@@ -10,6 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Data
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -46,5 +47,21 @@ public class ClientEntity extends RepresentationModel<ClientEntity> {
 
     public String getAddress() {
         return address;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setFname(String fname) {
+        this.fname = fname;
+    }
+
+    public void setLname(String lname) {
+        this.lname = lname;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

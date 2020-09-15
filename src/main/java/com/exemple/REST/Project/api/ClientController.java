@@ -60,7 +60,6 @@ public class ClientController{
     @GetMapping
     public ResponseEntity<PagedModel<ClientModel>> getAllPeople(Pageable pageable){
         Page<ClientEntity> allClient = clientService.getAllClient(pageable);
-        //allClient.forEach(client -> client.add(linkTo(ClientController.class).slash(client.getId()).withSelfRel()));
         PagedModel<ClientModel> clientCollectionModel = pagedResourcesAssembler.toModel(allClient,clientModelAssembler);
         return new ResponseEntity<>(clientCollectionModel,HttpStatus.OK);
     }
@@ -79,8 +78,8 @@ public class ClientController{
     }
 
     @PutMapping(path = "{id}")
-    public void updateClientById(@PathVariable("id") UUID id,@Valid @RequestBody Client clientToUpdate){
-        clientService.updateClientById(id, clientToUpdate);
+    public int updateClientById(@PathVariable("id") UUID id,@Valid @RequestBody Client clientToUpdate){
+       return clientService.updateClientById(id, clientToUpdate);
     }
 
     //@PatchMapping(path = "{id}")

@@ -46,6 +46,19 @@ public class ClientService {
     }
 
     public int updateClientById(UUID id,Client newClient){
-        return clientDao.updateClientById(id,newClient);
+        ClientEntity client = clientRepository.findById(id).orElse(new ClientEntity());
+        if(client.getId() == null) {
+            client.setId(id);
+        }
+            if(newClient.getFname()!= null && newClient.getLname() != null && newClient.getAddress()!=null){
+                client.setFname(newClient.getFname());
+                client.setLname(newClient.getLname());
+                client.setAddress(newClient.getAddress());
+                clientRepository.save(client);
+                return 1;
+            }
+        return 0;
+        }
+
     }
-}
+
