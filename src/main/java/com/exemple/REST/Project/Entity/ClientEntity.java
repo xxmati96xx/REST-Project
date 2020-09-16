@@ -34,12 +34,12 @@ public class ClientEntity extends RepresentationModel<ClientEntity> {
     private String address;
     @Version
     private Long version;
-    @Transient
-    private List<Integer> list = new ArrayList<Integer>(){{
-        add(1);
-        add(2);
-        add(3);
-    }};
+    //@Transient
+    //private List<Integer> list = new ArrayList<Integer>(){{
+    //    add(1);
+    //    add(2);
+    //    add(3);
+    //}};
 
     public UUID getId() {
         return id;
