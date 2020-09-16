@@ -74,17 +74,17 @@ public class ClientController{
     }*/
 
     @DeleteMapping(path = "{id}")
-    public String deleteClientById(@PathVariable("id") UUID id) {
+    public ResponseEntity<ClientEntity> deleteClientById(@PathVariable("id") UUID id) {
         return clientService.deleteClientById(id);
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<ClientEntity> updateClientById(@PathVariable("id") UUID id,@Valid @RequestBody Client clientToUpdate){
-       return new ResponseEntity<>(clientService.updateClientById(id, clientToUpdate),HttpStatus.NO_CONTENT);
+    public ResponseEntity<EntityModel<ClientEntity>> updateClientById(@PathVariable("id") UUID id,@Valid @RequestBody ClientEntity clientToUpdate){
+       return clientService.updateClientById(id, clientToUpdate);
     }
 
     @PatchMapping(path = "{id}")
-    public int updatePartialClientById(@PathVariable("id") UUID id, @RequestBody Client clientToUpdate){
+    public ResponseEntity<ClientEntity> updatePartialClientById(@PathVariable("id") UUID id, @RequestBody Client clientToUpdate){
         return clientService.updatePartialClientById(id, clientToUpdate);
     }
 }

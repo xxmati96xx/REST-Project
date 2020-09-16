@@ -18,19 +18,23 @@ import java.util.UUID;
 public class CarEntity extends RepresentationModel<CarEntity> {
     @Id
     @Column(name = "id")
-    @GeneratedValue
     @org.hibernate.annotations.Type(type = "org.hibernate.type.UUIDCharType")
     private UUID id;
     @NotBlank
     private String vin;
     @NotBlank
+    @Column(name = "producer")
     private String producer;
     @NotBlank
+    @Column(name = "model")
     private String model;
     private int hp;
+    @Column(name = "price")
     private float price;
     private boolean rent = false;
+    @Column(name = "year")
     private int year;
+    @Column(name = "details")
     private String details;
     @Version
     private Long version;

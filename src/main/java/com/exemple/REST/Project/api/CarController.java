@@ -2,7 +2,9 @@ package com.exemple.REST.Project.api;
 
 import com.exemple.REST.Project.Entity.CarEntity;
 import com.exemple.REST.Project.Entity.ClientEntity;
+import com.exemple.REST.Project.assemblers.CarModelAssembler;
 import com.exemple.REST.Project.assemblers.ClientModelAssembler;
+import com.exemple.REST.Project.model.CarModel;
 import com.exemple.REST.Project.model.Client;
 import com.exemple.REST.Project.model.ClientModel;
 import com.exemple.REST.Project.service.CarService;
@@ -30,9 +32,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class CarController{
     private final CarService carService;
 
-    //@Autowired
-    //private ClientRepository albumRepository;
-
     @Autowired
     public CarController(CarService carService) {
         this.carService = carService;
@@ -42,7 +41,7 @@ public class CarController{
     private PagedResourcesAssembler<CarEntity> pagedResourcesAssembler;
 
     @Autowired
-    private ClientModelAssembler clientModelAssembler;
+    private CarModelAssembler carModelAssembler;
     /*
     @PostMapping
     public ResponseEntity<EntityModel<CarEntity>> addClient(@RequestBody CarEntity car)
@@ -75,34 +74,26 @@ public class CarController{
     }
 
     @GetMapping
-    public ResponseEntity<Page<CarEntity>> getAllPeople(Pageable pageable){
+    public ResponseEntity<PagedModel<CarModel>> getAllPeople(Pageable pageable){
         Page<CarEntity> allCar = carService.getAllCar(pageable);
-        //PagedModel<ClientModel> clientCollectionModel = pagedResourcesAssembler.toModel(allClient,clientModelAssembler);
-        return new ResponseEntity<>(allCar,HttpStatus.OK);
-    }
-
-    /*@GetMapping(path = "{id}")
-    public ResponseEntity<EntityModel<Client>> getClientById(@PathVariable("id") UUID id){
-        Link link = linkTo(ClientController.class).slash(id).withSelfRel();
-        EntityModel<Client> clientEntityModel = EntityModel.of(clientService.getClientById(id)
-                .orElse(null),link);
-        return new ResponseEntity<>(clientEntityModel, HttpStatus.OK);
+        PagedModel<CarModel> carCollectionModel = pagedResourcesAssembler.toModel(allCar,carModelAssembler);
+        return new ResponseEntity<>(carCollectionModel,HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{id}")
-    public String deleteClientById(@PathVariable("id") UUID id) {
-        return clientService.deleteClientById(id);
+    public ResponseEntity<CarEntity> deleteCarById(@PathVariable("id") UUID id) {
+        return carService.deleteCarById(id);
     }
-*/
+
     @PutMapping(path = "{id}")
-    public ResponseEntity<CarEntity> updateCarById(@PathVariable("id") UUID id,@Valid @RequestBody CarEntity carToUpdate){
-        return new ResponseEntity<>(carService.updateCarById(id, carToUpdate),HttpStatus.NO_CONTENT);
+    public ResponseEntity<EntityModel<CarEntity>> updateCarById(@PathVariable("id") UUID id,@Valid @RequestBody CarEntity carToUpdate){
+        return carService.updateCarById(id, carToUpdate);
     }
-/*
+
     @PatchMapping(path = "{id}")
-    public int updatePartialClientById(@PathVariable("id") UUID id, @RequestBody Client clientToUpdate){
-        return clientService.updatePartialClientById(id, clientToUpdate);
+    public ResponseEntity<CarEntity> updatePartialCarById(@PathVariable("id") UUID id, @RequestBody CarEntity carToUpdate){
+        return carService.updatePartialCarById(id, carToUpdate);
     }
-    */
+
 
 }

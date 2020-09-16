@@ -5,6 +5,9 @@ import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -18,7 +21,6 @@ import java.util.UUID;
 public class ClientEntity extends RepresentationModel<ClientEntity> {
     @Id
     @Column(name = "id")
-    @GeneratedValue
     @org.hibernate.annotations.Type(type="org.hibernate.type.UUIDCharType")
     private UUID id;
 
@@ -32,6 +34,12 @@ public class ClientEntity extends RepresentationModel<ClientEntity> {
     private String address;
     @Version
     private Long version;
+    @Transient
+    private List<Integer> list = new ArrayList<Integer>(){{
+        add(1);
+        add(2);
+        add(3);
+    }};
 
     public UUID getId() {
         return id;
