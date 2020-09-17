@@ -8,6 +8,8 @@ import com.exemple.REST.Project.model.ClientModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 @Component
 public class ClientCarModelAssembler extends RepresentationModelAssemblerSupport<ClientCarEntity, ClientCarModel> {
     public ClientCarModelAssembler() {
@@ -21,7 +23,7 @@ public class ClientCarModelAssembler extends RepresentationModelAssemblerSupport
         CarModel carModel = new CarModel();
 
         clientCarModel.setId(entity.getId());
-
+        clientCarModel.add(linkTo(ReservationController.class).slash(clientCarModel.getId()).withSelfRel());
         clientModel.setId(entity.getClient_id());
         clientModel.setFname(entity.getFname());
         clientModel.setLname(entity.getLname());

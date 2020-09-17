@@ -73,7 +73,7 @@ public class ClientService {
             Link link = linkTo(CarController.class).slash(client.getId()).withSelfRel();
             Link linkAll = linkTo(CarController.class).withRel("All clients");
             EntityModel<ClientEntity> clientEntityEntityModel = EntityModel.of(clientRepository.save(client),link,linkAll);
-            new ResponseEntity<>(clientEntityEntityModel, HttpStatus.CREATED);
+            return new ResponseEntity<>(clientEntityEntityModel, HttpStatus.CREATED);
         }else if(!StringUtils.isEmpty(newClient.getFname()) &&
                 !StringUtils.isEmpty(newClient.getLname()) &&
                 !StringUtils.isEmpty(newClient.getAddress()))
@@ -81,13 +81,14 @@ public class ClientService {
                 client.setFname(newClient.getFname());
                 client.setLname(newClient.getLname());
                 client.setAddress(newClient.getAddress());
-                new ResponseEntity<>(clientRepository.save(client), HttpStatus.NO_CONTENT);
+                EntityModel<ClientEntity> entityEntityModel = EntityModel.of(clientRepository.save(client));
+                return new ResponseEntity<>(entityEntityModel, HttpStatus.NO_CONTENT);
             }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     public ResponseEntity<ClientEntity> updatePartialClientById(UUID id,Client newClient){
         ClientEntity client = clientRepository.findById(id).orElse(null);
-        if(client.getId() != null) {
+        if(client != null) {
             Optional.ofNullable(newClient.getFname())
                     .filter(fname -> !StringUtils.isEmpty(fname))
                     .map(StringUtils::capitalize)

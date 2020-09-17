@@ -26,8 +26,10 @@ public class ClientCarOneModel extends RepresentationModel<ClientCarOneModel> {
     private UUID id;
     private Date date;
     private Date dateOR;
+    private Long version;
     private ClientModel client;
     private CarFullModel car;
+
 
     public UUID getId() {
         return id;
@@ -67,5 +69,9 @@ public class ClientCarOneModel extends RepresentationModel<ClientCarOneModel> {
 
     public void setCar(CarFullModel car) {
         this.car = car;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }

@@ -31,6 +31,8 @@ public class ReservationEntity extends RepresentationModel<ReservationEntity> {
     private Date date = new Date();
 
     private Date dateOR;
+    @Version
+    private Long version;
 
     public void setId(UUID id) {
         this.id = id;
@@ -52,6 +54,10 @@ public class ReservationEntity extends RepresentationModel<ReservationEntity> {
         this.dateOR = dateOR;
     }
 
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -70,5 +76,9 @@ public class ReservationEntity extends RepresentationModel<ReservationEntity> {
 
     public Date getDateOR() {
         return dateOR;
+    }
+
+    public Long getVersion() {
+        return version;
     }
 }
