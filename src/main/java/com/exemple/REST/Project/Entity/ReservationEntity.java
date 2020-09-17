@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -22,9 +22,9 @@ public class ReservationEntity extends RepresentationModel<ReservationEntity> {
     @Column(name = "id")
     @org.hibernate.annotations.Type(type="org.hibernate.type.UUIDCharType")
     private UUID id;
-    @org.hibernate.annotations.Type(type="org.hibernate.type.UUIDCharType")
+    //@org.hibernate.annotations.Type(type="org.hibernate.type.UUIDCharType")
     private UUID client_id;
-    @org.hibernate.annotations.Type(type="org.hibernate.type.UUIDCharType")
+    //@org.hibernate.annotations.Type(type="org.hibernate.type.UUIDCharType")
     private UUID car_id;
 
     @javax.persistence.Temporal(TemporalType.TIMESTAMP)
@@ -50,5 +50,25 @@ public class ReservationEntity extends RepresentationModel<ReservationEntity> {
 
     public void setDateOR(Date dateOR) {
         this.dateOR = dateOR;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getClient_id() {
+        return client_id;
+    }
+
+    public UUID getCar_id() {
+        return car_id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public Date getDateOR() {
+        return dateOR;
     }
 }

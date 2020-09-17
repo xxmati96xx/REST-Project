@@ -12,12 +12,13 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CarModel extends RepresentationModel<CarModel> {
     private UUID id;
     private String producer;
     private String model;
+    private int hp;
     private float price;
     @Builder.Default
     private boolean rent = false;
@@ -26,6 +27,10 @@ public class CarModel extends RepresentationModel<CarModel> {
 
     public UUID getId() {
         return id;
+    }
+
+    public int getHp() {
+        return hp;
     }
 
 
@@ -55,7 +60,9 @@ public class CarModel extends RepresentationModel<CarModel> {
         this.id = id;
     }
 
-
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
     public void setProducer(String producer) {
         this.producer = producer;
     }

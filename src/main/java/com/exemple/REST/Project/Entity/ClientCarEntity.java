@@ -2,6 +2,7 @@ package com.exemple.REST.Project.Entity;
 
 import lombok.*;
 import org.hibernate.annotations.Type;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,11 +15,11 @@ import java.util.UUID;
 @Getter
 @Setter
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class ClientCarEntity {
+public class ClientCarEntity extends RepresentationModel<ClientCarEntity> {
     @Id
     @Column(name = "id")
     @org.hibernate.annotations.Type(type="org.hibernate.type.UUIDCharType")
@@ -37,7 +38,11 @@ public class ClientCarEntity {
     private float price;
     private boolean rent;
     private int year;
+    private int hp;
 
+    public int getHp() {
+        return hp;
+    }
 
     public UUID getId() {
         return id;

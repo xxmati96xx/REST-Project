@@ -26,7 +26,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @Service
 public class CarService {
 
-    private LinkedList<UUID> uuidList = new LinkedList<UUID>();
+    private LinkedList<UUID> uuidList = new LinkedList<>();
 
     @Autowired
     private CarRepository carRepository;
@@ -59,7 +59,7 @@ public class CarService {
                 !StringUtils.isEmpty(newCar.getModel()) &&
                 newCar.getHp() > 0 &&
                 newCar.getPrice() > 0 &&
-                (newCar.getRent() == true || newCar.getRent() == false) &&
+                (newCar.isRent() || !newCar.isRent()) &&
                 newCar.getYear() <= Calendar.getInstance().get(Calendar.YEAR) &&
                 !StringUtils.isEmpty(newCar.getDetails())) {
                     for (UUID uuid:uuidList) {
@@ -78,7 +78,7 @@ public class CarService {
                 !StringUtils.isEmpty(newCar.getModel()) &&
                 newCar.getHp() > 0 &&
                 newCar.getPrice() > 0 &&
-                (newCar.getRent() == true || newCar.getRent() == false) &&
+                (newCar.isRent() || !newCar.isRent()) &&
                 newCar.getYear() <= Calendar.getInstance().get(Calendar.YEAR) &&
                 !StringUtils.isEmpty(newCar.getDetails()))
         {
@@ -87,7 +87,7 @@ public class CarService {
             car.setModel(newCar.getModel());
             car.setHp(newCar.getHp());
             car.setPrice(newCar.getPrice());
-            car.setRent(newCar.getRent());
+            car.setRent(newCar.isRent());
             car.setYear(newCar.getYear());
             car.setDetails(newCar.getDetails());
             Link link = linkTo(ClientController.class).slash(car.getId()).withSelfRel();
@@ -119,18 +119,18 @@ public class CarService {
                     .filter(model -> !StringUtils.isEmpty(model))
                     .map(StringUtils::capitalize)
                     .ifPresent(model -> car.setModel(newCar.getModel()));
-            Optional.ofNullable(newCar.getHp())
+            Optional.of(newCar.getHp())
                     .filter(hp -> hp > 0)
                     .ifPresent(hp -> car.setHp(newCar.getHp()));
-            Optional.ofNullable(newCar.getPrice())
+            Optional.of(newCar.getPrice())
                     .filter(price -> price > 0)
                     .ifPresent(price -> car.setPrice(newCar.getPrice()));
-            Optional.ofNullable(newCar.getYear())
+            Optional.of(newCar.getYear())
                     .filter(year -> year <= Calendar.getInstance().get(Calendar.YEAR))
                     .ifPresent(year -> car.setYear(newCar.getYear()));
-            Optional.ofNullable(newCar.getRent())
-                    .filter(rent -> (rent == false || rent == true))
-                    .ifPresent(rent -> car.setRent(newCar.getRent()));
+            Optional.ofNullable(newCar.isRent())
+                    //.filter(rent -> (!rent || rent))
+                    .ifPresent(rent -> car.setRent(newCar.isRent()));
             Optional.ofNullable(newCar.getDetails())
                     .filter(details -> !StringUtils.isEmpty(details))
                     .ifPresent(details -> car.setDetails(newCar.getDetails()));

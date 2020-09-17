@@ -27,7 +27,8 @@ public class CarModelAssembler extends RepresentationModelAssemblerSupport<CarEn
         carModel.setModel(entity.getModel());
         carModel.setPrice(entity.getPrice());
         carModel.setYear(entity.getYear());
-        carModel.setRent(entity.getRent());
+        carModel.setRent(entity.isRent());
+        carModel.setHp(entity.getHp());
         return carModel;
     }
 }

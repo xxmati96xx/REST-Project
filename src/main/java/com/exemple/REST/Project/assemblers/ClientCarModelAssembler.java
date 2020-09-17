@@ -1,8 +1,6 @@
 package com.exemple.REST.Project.assemblers;
 
-import com.exemple.REST.Project.Entity.CarEntity;
 import com.exemple.REST.Project.Entity.ClientCarEntity;
-import com.exemple.REST.Project.api.CarController;
 import com.exemple.REST.Project.api.ReservationController;
 import com.exemple.REST.Project.model.CarModel;
 import com.exemple.REST.Project.model.ClientCarModel;
@@ -35,6 +33,7 @@ public class ClientCarModelAssembler extends RepresentationModelAssemblerSupport
         carModel.setPrice(entity.getPrice());
         carModel.setRent(entity.isRent());
         carModel.setYear(entity.getYear());
+        carModel.setHp(entity.getHp());
 
         clientCarModel.setDate(entity.getDate());
         clientCarModel.setDateOR(entity.getDateOR());
@@ -43,4 +42,5 @@ public class ClientCarModelAssembler extends RepresentationModelAssemblerSupport
         clientCarModel.setCar(carModel);
         return clientCarModel;
     }
+
 }

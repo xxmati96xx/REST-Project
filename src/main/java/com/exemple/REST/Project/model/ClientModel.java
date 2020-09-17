@@ -12,7 +12,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClientModel extends RepresentationModel<ClientModel> {
 

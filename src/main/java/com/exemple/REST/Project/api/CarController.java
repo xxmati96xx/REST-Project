@@ -59,7 +59,6 @@ public class CarController{
     public ResponseEntity<Link> addClient()
     {
         Link link = linkTo(CarController.class).slash(carService.getUUID()).withSelfRel();
-        System.out.println();
         return new ResponseEntity<>(link,HttpStatus.CREATED);
     }
 

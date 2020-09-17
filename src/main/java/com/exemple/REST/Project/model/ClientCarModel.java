@@ -12,15 +12,16 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClientCarModel extends RepresentationModel<ClientCarModel> {
-
+    @org.hibernate.annotations.Type(type="org.hibernate.type.UUIDCharType")
     private UUID id;
-    private ClientModel client;
-    private CarModel car;
     private Date date;
     private Date dateOR;
+    private ClientModel client;
+    private CarModel car;
+
 
     public void setDate(Date date) {
         this.date = date;
@@ -40,5 +41,25 @@ public class ClientCarModel extends RepresentationModel<ClientCarModel> {
 
     public void setCar(CarModel car) {
         this.car = car;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public ClientModel getClient() {
+        return client;
+    }
+
+    public CarModel getCar() {
+        return car;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public Date getDateOR() {
+        return dateOR;
     }
 }
