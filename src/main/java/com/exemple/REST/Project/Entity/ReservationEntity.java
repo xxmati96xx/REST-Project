@@ -4,6 +4,8 @@ import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -26,11 +28,11 @@ public class ReservationEntity extends RepresentationModel<ReservationEntity> {
     private UUID client_id;
     //@org.hibernate.annotations.Type(type="org.hibernate.type.UUIDCharType")
     private UUID car_id;
-
-    @javax.persistence.Temporal(TemporalType.TIMESTAMP)
-    private Date date = new Date();
-
+    @NotNull
+    private Date date;
+    @NotNull
     private Date dateOR;
+    @NotNull
     @Version
     private Long version;
 

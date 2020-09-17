@@ -93,102 +93,110 @@ public class ReservationService {
     }
 
     public ResponseEntity<EntityModel<ReservationEntity>> updateReservationById(UUID id, ReservationEntity newReservation){
-        ReservationEntity reservationEntity = reservationRepository.findById(id).orElse(null);
-        ClientEntity clientEntity = clientRepository.findById(newReservation.getClient_id()).orElse(null);
-        CarEntity carEntity = carRepository.findById(newReservation.getCar_id()).orElse(null);
-        if (clientEntity != null && carEntity != null  ){
-            if (reservationEntity == null) {
-                if (!carEntity.isRent()) {
-                    try {
-                        newReservation.setId(id);
-                        newReservation.setVersion(0L);
-                        carEntity.setRent(true);
-                        carRepository.save(carEntity);
-                        EntityModel<ReservationEntity> entityEntityModel = EntityModel.of(reservationRepository.save(newReservation), linkTo(ReservationController.class).slash(newReservation.getId()).withSelfRel());
-                        return new ResponseEntity<>(entityEntityModel, HttpStatus.CREATED);
-                    } catch (Exception e) {
+        if (    !StringUtils.isEmpty(newReservation.getCar_id()) && !StringUtils.isEmpty(newReservation.getClient_id()) &&
+                !StringUtils.isEmpty(newReservation.getDateOR()) && newReservation.getVersion() != null) {
+            ReservationEntity reservationEntity = reservationRepository.findById(id).orElse(null);
+            ClientEntity clientEntity = clientRepository.findById(newReservation.getClient_id()).orElse(null);
+            CarEntity carEntity = carRepository.findById(newReservation.getCar_id()).orElse(null);
+            if (clientEntity != null && carEntity != null) {
+                if (reservationEntity == null) {
+                    if (!carEntity.isRent() && newReservation.getDateOR().compareTo(new Date())>0) {
+                        try {
+                            newReservation.setId(id);
+                            newReservation.setVersion(0L);
+                            newReservation.setDate(new Date());
+                            carEntity.setRent(true);
+                            carRepository.save(carEntity);
+                            EntityModel<ReservationEntity> entityEntityModel = EntityModel.of(reservationRepository.save(newReservation), linkTo(ReservationController.class).slash(newReservation.getId()).withSelfRel());
+                            return new ResponseEntity<>(entityEntityModel, HttpStatus.CREATED);
+                        } catch (Exception e) {
 
+                        }
+                    } else {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                     }
-                }
-                else {
-                    return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-                }
-            }else
-            {
-                if(newReservation.getVersion() == reservationEntity.getVersion()) {
-                    CarEntity car = carRepository.findById(reservationEntity.getCar_id()).orElse(null);
-                    try {
+                } else {
+                    if (newReservation.getVersion() == reservationEntity.getVersion()) {
+                        CarEntity car = carRepository.findById(reservationEntity.getCar_id()).orElse(null);
+                        try {
+                            if (newReservation.getDateOR().compareTo(newReservation.getDate()) > 0) {
                                 reservationEntity.setClient_id(newReservation.getClient_id());
                                 reservationEntity.setCar_id(newReservation.getCar_id());
                                 reservationEntity.setDateOR(newReservation.getDateOR());
-                        if (car != null ){
-                            if (!car.equals(carEntity)) {
-                                car.setRent(false);
-                                carEntity.setRent(true);
-                                carRepository.save(car);
-                                carRepository.save(carEntity);
+                                reservationEntity.setDate(newReservation.getDate());
+                                if (car != null) {
+                                    if (!car.equals(carEntity)) {
+                                        car.setRent(false);
+                                        carEntity.setRent(true);
+                                        carRepository.save(car);
+                                        carRepository.save(carEntity);
+                                    }
+                                } else {
+                                    carEntity.setRent(true);
+                                    carRepository.save(carEntity);
+                                }
+                                EntityModel<ReservationEntity> reservationEntityEntityModel = EntityModel.of(reservationRepository.save(reservationEntity));
+                                return new ResponseEntity<>(reservationEntityEntityModel, HttpStatus.NO_CONTENT);
                             }
-                        }
-                        else{
-                            carEntity.setRent(true);
-                            carRepository.save(carEntity);
-                        }
-                        EntityModel<ReservationEntity> reservationEntityEntityModel = EntityModel.of(reservationRepository.save(reservationEntity));
-                        return new ResponseEntity<>(reservationEntityEntityModel, HttpStatus.NO_CONTENT);
-                    }catch (Exception e){
+                        } catch(Exception e){
 
+                        }
                     }
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
-                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
             }
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<ReservationEntity> updatePartialReservationById(UUID id, ReservationEntity newReservation) {
         ReservationEntity reservationEntity = reservationRepository.findById(id).orElse(null);
-        if (reservationEntity != null){
-            //ClientEntity clientEntity = clientRepository.findById(reservationEntity.getClient_id()).orElse(null);
-            ClientEntity clientNewEntity = clientRepository.findById(newReservation.getClient_id()).orElse(null);
-            if (clientNewEntity != null) {
-                reservationEntity.setClient_id(newReservation.getClient_id());
-            }
+        if (reservationEntity != null) {
+                if (!StringUtils.isEmpty(newReservation.getClient_id()) && clientRepository.findById(newReservation.getClient_id()).orElse(null) != null) {
+                    reservationEntity.setClient_id(newReservation.getClient_id());
+                }
             CarEntity carEntity = carRepository.findById(reservationEntity.getCar_id()).orElse(null);
-            CarEntity carNewEntity = carRepository.findById(newReservation.getCar_id()).orElse(null);
-            if (carNewEntity != null) {
-                if (carEntity != null) {
-                    if (!carNewEntity.equals(carEntity)) {
+            if(!StringUtils.isEmpty(newReservation.getCar_id())) {
+                CarEntity carNewEntity = carRepository.findById(newReservation.getCar_id()).orElse(null);
+                if (carNewEntity != null && !carEntity.isRent()) {
+                    if (carEntity != null) {
+                        if (!carNewEntity.equals(carEntity)) {
+                            try {
+                                carEntity.setRent(false);
+                                carNewEntity.setRent(true);
+                                carRepository.save(carEntity);
+                                carRepository.save(carNewEntity);
+                                reservationEntity.setCar_id(newReservation.getCar_id());
+                            } catch (Exception e) {
+
+                            }
+                        }
+                    } else {
                         try {
-                            carEntity.setRent(false);
                             carNewEntity.setRent(true);
-                            carRepository.save(carEntity);
                             carRepository.save(carNewEntity);
                             reservationEntity.setCar_id(newReservation.getCar_id());
                         } catch (Exception e) {
 
                         }
                     }
-                }else {
-                    try {
-                        carNewEntity.setRent(true);
-                        carRepository.save(carNewEntity);
-                        reservationEntity.setCar_id(newReservation.getCar_id());
-                    }catch (Exception e){
-
-                    }
-
                 }
-
-                }
-
-               return new ResponseEntity<>(reservationRepository.save(reservationEntity),HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            if (!StringUtils.isEmpty(newReservation.getDate())) {
+                reservationEntity.setDate(newReservation.getDate());
+            }
+            if (!StringUtils.isEmpty(newReservation.getDateOR()) && newReservation.getDateOR().compareTo(new Date()) > 0 && newReservation.getDateOR().compareTo(reservationEntity.getDate()) > 0) {
+                reservationEntity.setDateOR(newReservation.getDateOR());
+            }
+            return new ResponseEntity<>(reservationRepository.save(reservationEntity), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-
 }
+
+
+
 
 
