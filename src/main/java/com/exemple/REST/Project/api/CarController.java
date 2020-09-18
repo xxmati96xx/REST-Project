@@ -44,18 +44,6 @@ public class CarController{
 
     @Autowired
     private CarModelAssembler carModelAssembler;
-    /*
-    @PostMapping
-    public ResponseEntity<EntityModel<CarEntity>> addClient(@RequestBody CarEntity car)
-    {
-        CarEntity carEntity = carService.addCar(car);
-        Link link = linkTo(CarController.class).slash(carEntity.getId()).withSelfRel();
-        Link linkAll = linkTo(CarController.class).withRel("All cars");
-        EntityModel<CarEntity> clientEntityModel = EntityModel.of(carEntity,link,linkAll);
-        return new ResponseEntity<>(clientEntityModel,HttpStatus.CREATED);
-    }
-
-     */
 
     @PostMapping
     public ResponseEntity<Link> addCar()

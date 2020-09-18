@@ -107,7 +107,7 @@ public class CheckoutService {
 
     public ResponseEntity<EntityModel<CheckoutEntity>> updateCheckoutById(UUID id, CheckoutEntity newCheckout){
         if (    !StringUtils.isEmpty(newCheckout.getCar_id()) && !StringUtils.isEmpty(newCheckout.getClient_id()) &&
-                !StringUtils.isEmpty(newCheckout.getDateOR()) && newCheckout.getVersion() != null) {
+                !StringUtils.isEmpty(newCheckout.getDateOR())) {
             CheckoutEntity checkoutEntity = checkoutRepository.findById(id).orElse(null);
             ClientEntity clientEntity = clientRepository.findById(newCheckout.getClient_id()).orElse(null);
             CarEntity carEntity = carRepository.findById(newCheckout.getCar_id()).orElse(null);
@@ -123,13 +123,13 @@ public class CheckoutService {
                             EntityModel<CheckoutEntity> entityEntityModel = EntityModel.of(checkoutRepository.save(newCheckout), linkTo(CheckoutController.class).slash(newCheckout.getId()).withSelfRel());
                             return new ResponseEntity<>(entityEntityModel, HttpStatus.CREATED);
                         } catch (Exception e) {
-
+                            System.out.println("Exception :"+e.toString());
                         }
                     } else {
                         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                     }
                 } else {
-                    if (newCheckout.getVersion().equals(checkoutEntity.getVersion())) {
+                    if (checkoutEntity.getVersion().equals(newCheckout.getVersion()) && !StringUtils.isEmpty(newCheckout.getDate())) {
                         CarEntity car = carRepository.findById(checkoutEntity.getCar_id()).orElse(null);
                         try {
                             if (newCheckout.getDateOR().compareTo(newCheckout.getDate()) > 0) {
@@ -152,7 +152,7 @@ public class CheckoutService {
                                 return new ResponseEntity<>(reservationEntityEntityModel, HttpStatus.NO_CONTENT);
                             }
                         } catch(Exception e){
-
+                            System.out.println("Exception :"+e.toString());
                         }
                     }
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -172,8 +172,8 @@ public class CheckoutService {
             CarEntity carEntity = carRepository.findById(checkoutEntity.getCar_id()).orElse(null);
             if(!StringUtils.isEmpty(newCheckout.getCar_id())) {
                 CarEntity carNewEntity = carRepository.findById(newCheckout.getCar_id()).orElse(null);
-                if (carNewEntity != null && !carEntity.isRent()) {
-                    if (carEntity != null) {
+                if (carNewEntity != null && !carNewEntity.isRent()) {
+                    if (carEntity != null ) {
                         if (!carNewEntity.equals(carEntity)) {
                             try {
                                 carEntity.setRent(false);
@@ -182,7 +182,7 @@ public class CheckoutService {
                                 carRepository.save(carNewEntity);
                                 checkoutEntity.setCar_id(newCheckout.getCar_id());
                             } catch (Exception e) {
-
+                                System.out.println("Exception :"+e.toString());
                             }
                         }
                     } else {
@@ -191,7 +191,7 @@ public class CheckoutService {
                             carRepository.save(carNewEntity);
                             checkoutEntity.setCar_id(newCheckout.getCar_id());
                         } catch (Exception e) {
-
+                            System.out.println("Exception :"+e.toString());
                         }
                     }
                 }
@@ -231,7 +231,7 @@ public class CheckoutService {
 
             }
             catch (Exception e){
-
+                System.out.println("Exception :"+e.toString());
             }
         }
         return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);

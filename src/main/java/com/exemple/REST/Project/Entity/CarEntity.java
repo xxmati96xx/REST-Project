@@ -114,4 +114,8 @@ public class CarEntity extends RepresentationModel<CarEntity> {
     public void setDetails(String details) {
         this.details = details;
     }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 }

@@ -13,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -71,5 +71,13 @@ public class ClientEntity extends RepresentationModel<ClientEntity> {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }

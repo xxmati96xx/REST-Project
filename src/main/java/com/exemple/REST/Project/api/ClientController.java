@@ -41,21 +41,13 @@ public class ClientController{
     @PostMapping
     public ResponseEntity<EntityModel<ClientEntity>> addClient(@RequestBody ClientEntity client)
     {
-        ClientEntity clientEntity = clientService.addClient(client);
-        Link link = linkTo(ClientController.class).slash(clientEntity.getId()).withSelfRel();
-        Link linkAll = linkTo(ClientController.class).withRel("All clients");
-        EntityModel<ClientEntity> clientEntityModel = EntityModel.of(clientEntity,link,linkAll);
-        return new ResponseEntity<>(clientEntityModel,HttpStatus.CREATED);
+        return clientService.addClient(client);
     }
 
 
     @GetMapping(path = "{id}")
     public ResponseEntity<EntityModel<ClientEntity>> getClientById(@PathVariable("id") UUID id){
-        Link link = linkTo(ClientController.class).slash(id).withSelfRel();
-        Link linkAll = linkTo(ClientController.class).withRel("All clients");
-        EntityModel<ClientEntity> clientEntityModel = EntityModel.of(clientService.getClientById(id)
-                .orElse(null),link,linkAll);
-        return new ResponseEntity<>(clientEntityModel, HttpStatus.OK);
+        return clientService.getClientById(id);
     }
 
     @GetMapping

@@ -57,8 +57,11 @@ public class CarService {
     public ResponseEntity<CarEntity> deleteCarById(UUID id){
         CarEntity car = carRepository.findById(id).orElse(null);
         if(car != null) {
-            carRepository.delete(car);
-            return new ResponseEntity<>(null,HttpStatus.NO_CONTENT);
+            if (!car.isRent()) {
+                carRepository.delete(car);
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
     }
@@ -76,6 +79,7 @@ public class CarService {
                     for (UUID uuid:uuidList) {
                         if (id.equals(uuid)) {
                             car.setId(id);
+                            car.setVersion(0L);
                             Link link = linkTo(CarController.class).slash(car.getId()).withSelfRel();
                             Link linkAll = linkTo(CarController.class).withRel("All car");
                             uuidList.remove(uuid);
@@ -84,7 +88,8 @@ public class CarService {
                         }
                     }
         }
-        else if(!StringUtils.isEmpty(newCar.getVin()) &&
+        else if(car.getVersion().equals(newCar.getVersion()) &&
+                !StringUtils.isEmpty(newCar.getVin()) &&
                 !StringUtils.isEmpty(newCar.getProducer()) &&
                 !StringUtils.isEmpty(newCar.getModel()) &&
                 newCar.getHp() > 0 &&
@@ -105,13 +110,11 @@ public class CarService {
             EntityModel<CarEntity> carEntityEntityModel = EntityModel.of(carRepository.save(car),link);
             return new ResponseEntity<>(carEntityEntityModel,HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
 
     }
     public UUID getUUID(){
-        UUID tmpId = UUID.randomUUID();
-        uuidList.add(tmpId);
-        return tmpId;
+        return UUID.randomUUID();
     }
 
 

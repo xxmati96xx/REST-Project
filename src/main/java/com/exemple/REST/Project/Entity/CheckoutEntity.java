@@ -26,11 +26,11 @@ public class CheckoutEntity extends RepresentationModel<CheckoutEntity> {
     private UUID client_id;
     //@org.hibernate.annotations.Type(type="org.hibernate.type.UUIDCharType")
     private UUID car_id;
-    @NotNull
+
     private Date date;
     @NotNull
     private Date dateOR;
-    @NotNull
+
     @Version
     private Long version;
 

@@ -1,7 +1,11 @@
 package com.exemple.REST.Project.service;
 
+import com.exemple.REST.Project.Entity.CarEntity;
+import com.exemple.REST.Project.Entity.CheckoutEntity;
 import com.exemple.REST.Project.Entity.ClientEntity;
 import com.exemple.REST.Project.api.CarController;
+import com.exemple.REST.Project.api.ClientController;
+import com.exemple.REST.Project.dao.CheckoutRepository;
 import com.exemple.REST.Project.dao.ClientDao;
 import com.exemple.REST.Project.dao.ClientRepository;
 import com.exemple.REST.Project.model.Client;
@@ -30,37 +34,59 @@ public class ClientService {
 
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private CheckoutRepository checkoutRepository;
 
     @Autowired
     public ClientService(@Qualifier("postgres") ClientDao clientDao) {
         this.clientDao = clientDao;
     }
 
-    public ClientEntity addClient(ClientEntity client){
-        client.setId(getUUID());
-        return clientRepository.save(client);
+    public ResponseEntity<EntityModel<ClientEntity>> addClient(ClientEntity client){
+        if(     !StringUtils.isEmpty(client.getFname()) &&
+                !StringUtils.isEmpty(client.getLname()) &&
+                !StringUtils.isEmpty(client.getAddress())) {
+            client.setId(getUUID());
+            client.setVersion(0L);
+            clientRepository.save(client);
+            Link link = linkTo(ClientController.class).slash(client.getId()).withSelfRel();
+            Link linkAll = linkTo(ClientController.class).withRel("All clients");
+            EntityModel<ClientEntity> clientEntityModel = EntityModel.of(client, link, linkAll);
+            return new ResponseEntity<>(clientEntityModel,HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
 
     public Page<ClientEntity> getAllClient(Pageable pageable){
         return clientRepository.findAll(pageable);
     }
 
-    public Optional<ClientEntity> getClientById(UUID id){
-        return clientRepository.findById(id);
+    public ResponseEntity<EntityModel<ClientEntity>> getClientById(UUID id){
+        Link link = linkTo(ClientController.class).slash(id).withSelfRel();
+        Link linkAll = linkTo(ClientController.class).withRel("All clients");
+        ClientEntity clientEntity = clientRepository.findById(id).orElse(null);
+        if (clientEntity != null) {
+            EntityModel<ClientEntity> entityModel = EntityModel.of(clientEntity, link, linkAll);
+            return new ResponseEntity<>(entityModel, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     public ResponseEntity<ClientEntity> deleteClientById(UUID id){
+        List<CheckoutEntity> checkoutEntities = checkoutRepository.findAllByClient_Id(id);
         ClientEntity client = clientRepository.findById(id).orElse(null);
         if(client != null) {
-            clientRepository.deleteById(id);
-            return new ResponseEntity<>(null,HttpStatus.NO_CONTENT);
+            if(checkoutEntities.isEmpty()) {
+                clientRepository.deleteById(id);
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
     }
 
     public UUID getUUID(){
-        UUID tmpId = UUID.randomUUID();
-        return tmpId;
+        return UUID.randomUUID();
     }
 
     public ResponseEntity<EntityModel<ClientEntity>> updateClientById(UUID id, ClientEntity newClient){
@@ -70,11 +96,13 @@ public class ClientService {
                 !StringUtils.isEmpty(newClient.getLname()) &&
                 !StringUtils.isEmpty(newClient.getAddress())) {
             client.setId(id);
+            client.setVersion(0L);
             Link link = linkTo(CarController.class).slash(client.getId()).withSelfRel();
             Link linkAll = linkTo(CarController.class).withRel("All clients");
             EntityModel<ClientEntity> clientEntityEntityModel = EntityModel.of(clientRepository.save(client),link,linkAll);
             return new ResponseEntity<>(clientEntityEntityModel, HttpStatus.CREATED);
-        }else if(!StringUtils.isEmpty(newClient.getFname()) &&
+        }else if(client.getVersion().equals(newClient.getVersion()) &&
+                !StringUtils.isEmpty(newClient.getFname()) &&
                 !StringUtils.isEmpty(newClient.getLname()) &&
                 !StringUtils.isEmpty(newClient.getAddress()))
             {
