@@ -4,9 +4,7 @@ import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -17,8 +15,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "reservation")
-public class ReservationEntity extends RepresentationModel<ReservationEntity> {
+@Table(name = "checkout")
+public class CheckoutEntity extends RepresentationModel<CheckoutEntity> {
 
     @Id
     @Column(name = "id")

@@ -5,7 +5,7 @@ import com.exemple.REST.Project.Entity.*;
 import com.exemple.REST.Project.model.ClientCarOneModel;
 import com.exemple.REST.Project.assemblers.ClientCarModelAssembler;
 import com.exemple.REST.Project.model.ClientCarModel;
-import com.exemple.REST.Project.service.ReservationService;
+import com.exemple.REST.Project.service.CheckoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,12 +22,12 @@ import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-@RequestMapping("api/v1/reservation")
+@RequestMapping("api/v1/checkouts")
 @RestController
-public class ReservationController {
+public class CheckoutController {
 
 
-    private final ReservationService reservationService;
+    private final CheckoutService checkoutService;
 
     @Autowired
     private PagedResourcesAssembler<ClientCarEntity> pagedResourcesAssembler;
@@ -36,36 +36,41 @@ public class ReservationController {
     private ClientCarModelAssembler clientCarModelAssembler;
 
     @Autowired
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
+    public CheckoutController(CheckoutService checkoutService) {
+        this.checkoutService = checkoutService;
     }
 
     @PostMapping
-    public ResponseEntity<Link> addReservation()
+    public ResponseEntity<Link> addCheckout()
     {
-       return reservationService.addReservation();
+       return checkoutService.addCheckout();
     }
 
     @GetMapping
-    public ResponseEntity<PagedModel<ClientCarModel>> getAllReservation(Pageable pageable){
-        Page<ClientCarEntity> allClientCarEntity = reservationService.getAllReservation(pageable);
+    public ResponseEntity<PagedModel<ClientCarModel>> getAllCheckout(Pageable pageable){
+        Page<ClientCarEntity> allClientCarEntity = checkoutService.getAllCheckout(pageable);
         PagedModel<ClientCarModel> clientCarCollectionModel = pagedResourcesAssembler.toModel(allClientCarEntity,clientCarModelAssembler);
         return new ResponseEntity<>(clientCarCollectionModel,HttpStatus.OK);
     }
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<EntityModel<ClientCarOneModel>> getOneReservationById(@PathVariable("id") UUID id){
-        return reservationService.getOneReservationById(id);
+    public ResponseEntity<EntityModel<ClientCarOneModel>> getOneCheckoutById(@PathVariable("id") UUID id){
+        return checkoutService.getOneCheckoutById(id);
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<EntityModel<ReservationEntity>> updateReservationById(@PathVariable("id") UUID id,@Valid @RequestBody ReservationEntity reservationToUpdate){
-        return reservationService.updateReservationById(id, reservationToUpdate);
+    public ResponseEntity<EntityModel<CheckoutEntity>> updateCheckoutById(@PathVariable("id") UUID id, @Valid @RequestBody CheckoutEntity reservationToUpdate){
+        return checkoutService.updateCheckoutById(id, reservationToUpdate);
     }
 
     @PatchMapping(path = "{id}")
-    public ResponseEntity<ReservationEntity> updatePartialReservationById(@PathVariable("id") UUID id,@RequestBody ReservationEntity reservationToUpdate){
-        return reservationService.updatePartialReservationById(id, reservationToUpdate);
+    public ResponseEntity<CheckoutEntity> updatePartialCheckoutById(@PathVariable("id") UUID id, @RequestBody CheckoutEntity reservationToUpdate){
+        return checkoutService.updatePartialCheckoutById(id, reservationToUpdate);
+    }
+
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<CheckoutEntity> deleteCheckoutById(@PathVariable("id") UUID id){
+        return checkoutService.deleteCheckoutById(id);
     }
 }
 

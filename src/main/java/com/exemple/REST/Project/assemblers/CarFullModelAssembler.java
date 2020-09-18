@@ -30,6 +30,7 @@ public class CarFullModelAssembler extends RepresentationModelAssemblerSupport<C
         carFullModel.setYear(entity.getYear());
         carFullModel.setRent(entity.isRent());
         carFullModel.setHp(entity.getHp());
+        carFullModel.setVin(entity.getVin());
         carFullModel.setDetails(entity.getDetails());
 
         return carFullModel;

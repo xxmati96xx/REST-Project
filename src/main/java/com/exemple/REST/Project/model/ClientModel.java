@@ -42,6 +42,10 @@ public class ClientModel extends RepresentationModel<ClientModel> {
         this.address = address;
     }
 
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
     public UUID getId() {
         return id;
     }

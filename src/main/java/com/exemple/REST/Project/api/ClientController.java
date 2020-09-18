@@ -23,7 +23,7 @@ import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-@RequestMapping("api/v1/client")
+@RequestMapping("api/v1/clients")
 @RestController
 public class ClientController{
     private final ClientService clientService;

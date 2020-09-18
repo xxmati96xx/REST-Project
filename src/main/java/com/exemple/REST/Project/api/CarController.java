@@ -16,18 +16,20 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
 
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-@RequestMapping("api/v1/car")
+@RequestMapping("api/v1/cars")
 @RestController
 public class CarController{
     private final CarService carService;
@@ -56,20 +58,14 @@ public class CarController{
      */
 
     @PostMapping
-    public ResponseEntity<Link> addClient()
+    public ResponseEntity<Link> addCar()
     {
-        Link link = linkTo(CarController.class).slash(carService.getUUID()).withSelfRel();
-        return new ResponseEntity<>(link,HttpStatus.CREATED);
+        return carService.addCar();
     }
-
 
     @GetMapping(path = "{id}")
     public ResponseEntity<EntityModel<CarEntity>> getClientById(@PathVariable("id") UUID id){
-        Link link = linkTo(CarController.class).slash(id).withSelfRel();
-        Link linkAll = linkTo(CarController.class).withRel("All car");
-        EntityModel<CarEntity> carEntityModel = EntityModel.of(carService.getCarById(id)
-                .orElse(null),link,linkAll);
-        return new ResponseEntity<>(carEntityModel, HttpStatus.OK);
+        return carService.getCarById(id);
     }
 
     @GetMapping

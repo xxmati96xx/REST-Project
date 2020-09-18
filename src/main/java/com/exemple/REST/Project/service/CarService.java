@@ -3,6 +3,7 @@ package com.exemple.REST.Project.service;
 import com.exemple.REST.Project.Entity.CarEntity;
 import com.exemple.REST.Project.Entity.ClientEntity;
 import com.exemple.REST.Project.api.CarController;
+import com.exemple.REST.Project.api.CheckoutController;
 import com.exemple.REST.Project.api.ClientController;
 import com.exemple.REST.Project.dao.CarRepository;
 
@@ -31,16 +32,26 @@ public class CarService {
     @Autowired
     private CarRepository carRepository;
 
-    public CarEntity addCar(CarEntity car){
-        return carRepository.save(car);
+    public ResponseEntity<Link> addCar(){
+        UUID tmpId = getUUID();
+        uuidList.add(tmpId);
+        Link link = linkTo(CarController.class).slash(tmpId).withSelfRel();
+        return new ResponseEntity<>(link,HttpStatus.OK);
     }
 
     public Page<CarEntity> getAllCar(Pageable pageable){
         return carRepository.findAll(pageable);
     }
 
-    public Optional<CarEntity> getCarById(UUID id){
-        return carRepository.findById(id);
+    public ResponseEntity<EntityModel<CarEntity>> getCarById(UUID id){
+        Link link = linkTo(CarController.class).slash(id).withSelfRel();
+        Link linkAll = linkTo(CarController.class).withRel("All car");
+        CarEntity carEntity = carRepository.findById(id).orElse(null);
+        if (carEntity != null) {
+            EntityModel<CarEntity> carEntityModel = EntityModel.of(carEntity, link, linkAll);
+            return new ResponseEntity<>(carEntityModel, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
     }
 
     public ResponseEntity<CarEntity> deleteCarById(UUID id){

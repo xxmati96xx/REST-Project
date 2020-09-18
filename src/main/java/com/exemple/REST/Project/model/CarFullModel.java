@@ -16,6 +16,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CarFullModel extends RepresentationModel<CarFullModel> {
     private UUID id;
+    private String vin;
     private String producer;
     private String model;
     private int hp;
@@ -31,6 +32,9 @@ public class CarFullModel extends RepresentationModel<CarFullModel> {
         return id;
     }
 
+    public String getVin() {
+        return vin;
+    }
 
     public String getProducer() {
         return producer;
@@ -61,10 +65,17 @@ public class CarFullModel extends RepresentationModel<CarFullModel> {
         return details;
     }
 
+    public Long getVersion() {
+        return version;
+    }
+
     public void setId(UUID id) {
         this.id = id;
     }
 
+    public void setVin(String vin) {
+        this.vin = vin;
+    }
 
     public void setProducer(String producer) {
         this.producer = producer;
@@ -93,5 +104,9 @@ public class CarFullModel extends RepresentationModel<CarFullModel> {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }

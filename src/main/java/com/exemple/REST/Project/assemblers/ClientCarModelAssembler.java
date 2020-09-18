@@ -1,7 +1,7 @@
 package com.exemple.REST.Project.assemblers;
 
 import com.exemple.REST.Project.Entity.ClientCarEntity;
-import com.exemple.REST.Project.api.ReservationController;
+import com.exemple.REST.Project.api.CheckoutController;
 import com.exemple.REST.Project.model.CarModel;
 import com.exemple.REST.Project.model.ClientCarModel;
 import com.exemple.REST.Project.model.ClientModel;
@@ -13,7 +13,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @Component
 public class ClientCarModelAssembler extends RepresentationModelAssemblerSupport<ClientCarEntity, ClientCarModel> {
     public ClientCarModelAssembler() {
-        super(ReservationController.class, ClientCarModel.class);
+        super(CheckoutController.class, ClientCarModel.class);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class ClientCarModelAssembler extends RepresentationModelAssemblerSupport
         CarModel carModel = new CarModel();
 
         clientCarModel.setId(entity.getId());
-        clientCarModel.add(linkTo(ReservationController.class).slash(clientCarModel.getId()).withSelfRel());
+        clientCarModel.add(linkTo(CheckoutController.class).slash(clientCarModel.getId()).withSelfRel());
         clientModel.setId(entity.getClient_id());
         clientModel.setFname(entity.getFname());
         clientModel.setLname(entity.getLname());
