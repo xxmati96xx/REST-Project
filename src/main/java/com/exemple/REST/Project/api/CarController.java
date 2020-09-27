@@ -64,8 +64,8 @@ public class CarController{
     }
 
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<CarEntity> deleteCarById(@PathVariable("id") UUID id) {
-        return carService.deleteCarById(id);
+    public ResponseEntity<CarEntity> deleteCarById(@PathVariable("id") UUID id,@RequestBody CarEntity carEntity) {
+        return carService.deleteCarById(id,carEntity);
     }
 
     @PutMapping(path = "{id}")

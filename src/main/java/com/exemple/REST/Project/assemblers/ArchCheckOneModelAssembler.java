@@ -22,7 +22,7 @@ public class ArchCheckOneModelAssembler extends RepresentationModelAssemblerSupp
         CarFullModel carFullModel = new CarFullModel();
 
         clientCarOneModel.setId(entity.getId());
-        clientCarOneModel.add(linkTo(ArchCheckController.class).slash(clientCarOneModel.getId()).withSelfRel());
+        //clientCarOneModel.add(linkTo(ArchCheckController.class).slash(clientCarOneModel.getId()).withSelfRel());
         clientModel.setId(entity.getClient_id());
         clientModel.setFname(entity.getFname());
         clientModel.setLname(entity.getLname());

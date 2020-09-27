@@ -1,6 +1,0 @@
-CREATE TABLE client (
-    id UUID NOT NULL PRIMARY KEY,
-    fname VARCHAR(100) NOT NULL,
-    lname VARCHAR(100) NOT NULL,
-    address VARCHAR(100) NOT NULL
-);

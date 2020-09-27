@@ -44,7 +44,6 @@ public class ClientController{
         return clientService.addClient(client);
     }
 
-
     @GetMapping(path = "{id}")
     public ResponseEntity<EntityModel<ClientEntity>> getClientById(@PathVariable("id") UUID id){
         return clientService.getClientById(id);
@@ -57,17 +56,9 @@ public class ClientController{
         return new ResponseEntity<>(clientCollectionModel,HttpStatus.OK);
     }
 
-    /*@GetMapping(path = "{id}")
-    public ResponseEntity<EntityModel<Client>> getClientById(@PathVariable("id") UUID id){
-        Link link = linkTo(ClientController.class).slash(id).withSelfRel();
-        EntityModel<Client> clientEntityModel = EntityModel.of(clientService.getClientById(id)
-                .orElse(null),link);
-        return new ResponseEntity<>(clientEntityModel, HttpStatus.OK);
-    }*/
-
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<ClientEntity> deleteClientById(@PathVariable("id") UUID id) {
-        return clientService.deleteClientById(id);
+    public ResponseEntity<ClientEntity> deleteClientById(@PathVariable("id") UUID id, @RequestBody ClientEntity clientEntity) {
+        return clientService.deleteClientById(id,clientEntity);
     }
 
     @PutMapping(path = "{id}")

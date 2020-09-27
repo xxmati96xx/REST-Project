@@ -6,7 +6,6 @@ import com.exemple.REST.Project.Entity.ClientEntity;
 import com.exemple.REST.Project.api.CarController;
 import com.exemple.REST.Project.api.ClientController;
 import com.exemple.REST.Project.dao.CheckoutRepository;
-import com.exemple.REST.Project.dao.ClientDao;
 import com.exemple.REST.Project.dao.ClientRepository;
 import com.exemple.REST.Project.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,17 +29,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @Service
 public class ClientService {
 
-    private final ClientDao clientDao;
-
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
     private CheckoutRepository checkoutRepository;
-
-    @Autowired
-    public ClientService(@Qualifier("postgres") ClientDao clientDao) {
-        this.clientDao = clientDao;
-    }
 
     public ResponseEntity<EntityModel<ClientEntity>> addClient(ClientEntity client){
         if(     !StringUtils.isEmpty(client.getFname()) &&
@@ -72,11 +64,11 @@ public class ClientService {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<ClientEntity> deleteClientById(UUID id){
+    public ResponseEntity<ClientEntity> deleteClientById(UUID id, ClientEntity clientEntity){
         List<CheckoutEntity> checkoutEntities = checkoutRepository.findAllByClient_Id(id);
         ClientEntity client = clientRepository.findById(id).orElse(null);
         if(client != null) {
-            if(checkoutEntities.isEmpty()) {
+            if(checkoutEntities.isEmpty() && client.getVersion().equals(clientEntity.getVersion())) {
                 clientRepository.deleteById(id);
                 return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
             }

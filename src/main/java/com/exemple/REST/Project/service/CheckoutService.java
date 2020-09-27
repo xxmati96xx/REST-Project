@@ -2,6 +2,7 @@ package com.exemple.REST.Project.service;
 
 
 import com.exemple.REST.Project.Entity.*;
+import com.exemple.REST.Project.api.ArchCheckController;
 import com.exemple.REST.Project.dao.*;
 import com.exemple.REST.Project.model.CarModel;
 import com.exemple.REST.Project.model.ClientCarOneModel;
@@ -98,8 +99,8 @@ public class CheckoutService {
         ArchCheckEntity archCheckEntity = archCheckRepository.findById(id).orElse(null);
         if (archCheckEntity != null) {
             ClientCarOneModel clientCarOneModel = clientCarOneRepresentationModelAssembler.toModel(archCheckEntity);
-            Link link = linkTo(CheckoutController.class).slash(id).withSelfRel();
-            Link linkAll = linkTo(CheckoutController.class).withRel("All archcheck");
+            Link link = linkTo(ArchCheckController.class).slash(id).withSelfRel();
+            Link linkAll = linkTo(ArchCheckController.class).withRel("All archives");
             EntityModel<ClientCarOneModel> entityModel = EntityModel.of(clientCarOneModel,link,linkAll);
             return new ResponseEntity<>(entityModel,HttpStatus.OK);
         }
@@ -139,14 +140,21 @@ public class CheckoutService {
                                 checkoutEntity.setDate(newCheckout.getDate());
                                 if (car != null) {
                                     if (!car.equals(carEntity)) {
-                                        car.setRent(false);
-                                        carEntity.setRent(true);
-                                        carRepository.save(car);
-                                        carRepository.save(carEntity);
+                                        if(!carEntity.isRent()) {
+                                            car.setRent(false);
+                                            carEntity.setRent(true);
+                                            carRepository.save(car);
+                                            carRepository.save(carEntity);
+                                        }else {
+                                            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                                        }
                                     }
-                                } else {
+                                } else if(!carEntity.isRent()){
                                     carEntity.setRent(true);
                                     carRepository.save(carEntity);
+                                }
+                                else {
+                                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                                 }
                                 EntityModel<CheckoutEntity> reservationEntityEntityModel = EntityModel.of(checkoutRepository.save(checkoutEntity));
                                 return new ResponseEntity<>(reservationEntityEntityModel, HttpStatus.NO_CONTENT);
@@ -207,9 +215,9 @@ public class CheckoutService {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<CheckoutEntity> deleteCheckoutById(UUID id){
+    public ResponseEntity<CheckoutEntity> deleteCheckoutById(UUID id, CheckoutEntity checkoutEntityVersion){
         CheckoutEntity checkoutEntity = checkoutRepository.findById(id).orElse(null);
-        if(checkoutEntity != null) {
+        if(checkoutEntity != null && checkoutEntity.getVersion().equals(checkoutEntityVersion.getVersion())) {
             try{
                 CarEntity carEntity = carRepository.findById(checkoutEntity.getCar_id()).orElse(null);
                 if (carEntity != null){

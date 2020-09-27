@@ -54,10 +54,10 @@ public class CarService {
         return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<CarEntity> deleteCarById(UUID id){
+    public ResponseEntity<CarEntity> deleteCarById(UUID id, CarEntity carEntity){
         CarEntity car = carRepository.findById(id).orElse(null);
         if(car != null) {
-            if (!car.isRent()) {
+            if (!car.isRent() && car.getVersion().equals(carEntity.getVersion())) {
                 carRepository.delete(car);
                 return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
             }

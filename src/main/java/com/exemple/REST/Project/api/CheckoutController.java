@@ -69,8 +69,8 @@ public class CheckoutController {
     }
 
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<CheckoutEntity> deleteCheckoutById(@PathVariable("id") UUID id){
-        return checkoutService.deleteCheckoutById(id);
+    public ResponseEntity<CheckoutEntity> deleteCheckoutById(@PathVariable("id") UUID id,@RequestBody CheckoutEntity checkoutEntity){
+        return checkoutService.deleteCheckoutById(id,checkoutEntity);
     }
 }
 
